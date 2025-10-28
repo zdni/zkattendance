@@ -114,8 +114,10 @@ def export_json():
         "device_password": device_password,
     }
     attendances = DeviceUsers.get_attendance(device)
-    start_date = entries_date[0].get_date().date()
-    end_date = entries_date[1].get_date().date()
+    # start_date = entries_date[0].get_date().date()
+    # end_date = entries_date[1].get_date().date()
+    start_date = datetime.strptime(entries[3].get(), "%Y-%m-%d").date()
+    end_date = datetime.strptime(entries[4].get(), "%Y-%m-%d").date()
     for attendance in attendances:
         attendance_date = attendance[1].date()
         if not (attendance_date < start_date or attendance_date > end_date):
@@ -150,11 +152,12 @@ label = tk.Label(root, text="Please Fill Form!")
 label.grid(row=0, column=0, columnspan=2, pady=20)
 
 # form
-labels = ["IP Device", "Port Device", "Password Device"]
+labels = ["IP Device", "Port Device", "Password Device", "Start Date", "End Date"]
 entries = [tk.Entry(root) for _ in labels]
 labels_date = ["Start Date", "End Date"]
 entries_date = [DateEntry(root, dateformat="%Y-%m-%d") for _ in labels_date]
 
+today_string = date.today().strftime("%Y-%m-%d")
 last_row = 0
 for i, lbl in enumerate(labels):
     tk.Label(root, text=lbl).grid(row=i+1, column=0, sticky='W', padx=5, pady=5)
@@ -165,16 +168,18 @@ for i, lbl in enumerate(labels):
         entries[i].insert(END, '4370')
     if lbl == 'Password Device':
         entries[i].insert(END, '0')
+    if lbl == 'Start Date' or lbl == 'End Date':
+        entries[i].insert(END, today_string)
     if i < len(labels) - 1:
         entries[i].bind("<Return>", lambda e, nf=entries[i+1]: focus_next(nf))
     last_row += 1
 
-for i, lbl in enumerate(labels_date):
-    tk.Label(root, text=lbl).grid(row=i+last_row+1, column=0, sticky='W', padx=5, pady=5)
-    entries_date[i].grid(row=i+last_row+1, column=1, sticky='EW', padx=5, pady=5)
-    if i < len(labels_date) - 1:
-        entries_date[i].bind("<Return>", lambda e, nf=entries_date[i+1]: focus_next(nf))
-    last_row += 1
+# for i, lbl in enumerate(labels_date):
+#     tk.Label(root, text=lbl).grid(row=i+last_row+1, column=0, sticky='W', padx=5, pady=5)
+#     entries_date[i].grid(row=i+last_row+1, column=1, sticky='EW', padx=5, pady=5)
+#     if i < len(labels_date) - 1:
+#         entries_date[i].bind("<Return>", lambda e, nf=entries_date[i+1]: focus_next(nf))
+#     last_row += 1
 
 button = ttk.Button(root, text="Export Data", bootstyle=SUCCESS, command=export_data)
 button.grid(row=last_row + 2, column=1, pady=5, padx=5, sticky='EW')

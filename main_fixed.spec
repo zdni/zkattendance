@@ -17,6 +17,11 @@ a = Analysis(
         'ttkbootstrap.constants',
         'ttkbootstrap.dialogs',
         'zk',
+        'zk.base',
+        'zk.attendance',
+        'zk.user',
+        'zk.finger',
+        'zk.exception',
         'tkinter',
         'tkinter.ttk'
     ],
